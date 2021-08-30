@@ -20,15 +20,17 @@ use App\Http\Controllers\GoogleController;
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
 // });
-Route::group(['middleware' => ['web']], function () {
-    Route::get('user/google', [GoogleController::class, 'redirectToGoogle']);
-    Route::get('user/google/callback', [GoogleController::class, 'handleGoogleCallback']);
-});
 
 
 Route::prefix('user')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/register', [AuthController::class, 'register']);
+
+    Route::group(['middleware' => ['web']], function () {
+        Route::get('google', [GoogleController::class, 'redirectToGoogle']);
+        Route::get('google/callback', [GoogleController::class, 'handleGoogleCallback']);
+    });
+    
     Route::group(['middleware' => ['jwt.verify']], function () {
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::post('/refresh-token', [AuthController::class, 'refresh']);
