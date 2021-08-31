@@ -34,7 +34,10 @@ Route::prefix('user')->group(function () {
     Route::group(['middleware' => ['jwt.verify']], function () {
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::post('/refresh-token', [AuthController::class, 'refresh']);
-        Route::get('/user-profile', [AuthController::class, 'userProfile']);    
+        Route::get('/user-profile', [AuthController::class, 'userProfile']);
+        Route::post('/profile-picture', [AuthController::class, 'profilePicture']);
+        Route::put('/update', [AuthController::class, 'update']);
+        Route::delete('/delete', [AuthController::class, 'delete']);
     });
 });
 
