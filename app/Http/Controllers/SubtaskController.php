@@ -5,22 +5,23 @@ namespace App\Http\Controllers;
 use App\Models\Task;
 use Illuminate\Http\Request;
 use App\Models\UserHasTask;
+use App\Models\Subtask;
 use Validator;
 
-class TaskController extends Controller
+class SubtaskController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($task_id)
     {
-        $tasks = Task::where('user_id', auth()->user()->id)->get();
+        $subtask = Subtask::where('task_id', $task_id)->get();
 
         return response()->json([
             'message' => 'Success',
-            'data' => $tasks
+            'data' => $subtask
         ]);
     }
 
@@ -35,42 +36,39 @@ class TaskController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|min:3',
             'file' => 'mimes:pdf,doc,docx,jpg,jpeg,png,ppt,pptx',
-            'start' => 'required|date',
-            'end' => 'required|date|after:start'
+            'task_id' => 'required|integer'
         ]);
 
         if($validator->fails()){
             return response()->json($validator->errors(), 400);
         }
 
-        $task = Task::create([
+        $subtask = Subtask::create([
             'title' => $request->title,
             'desc' => $request->desc,
-            'start' => $request->start,
-            'end' => $request->end,
-            'user_id' => auth()->user()->id
+            'task_id' => $request->task_id,
         ]);
 
         if ($request->hasFile('file')) {
             $filename = $request->file->getClientOriginalName();
-            $path = $request->file->storeAs('task', $filename);
-            $task->file = '/storage/'.$path;
-            $task->save();
+            $path = $request->file->storeAs('subtask', $filename);
+            $subtask->file = '/storage/'.$path;
+            $subtask->save();
         }
 
         return response()->json([
-            'message' => 'Task successfully created',
-            'data' => $task
+            'message' => 'Subtask successfully created',
+            'data' => $subtask
         ], 201);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Task  $task
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Task $task, $id)
+    public function show($id)
     {
         if(!is_numeric($id)){
             return response()->json([
@@ -78,26 +76,24 @@ class TaskController extends Controller
             ], 400);
         }
 
-        $task = Task::find($id);
-        
-        if(!$task){
+        $subtask = Subtask::find($id);
+        if(!$subtask){
             return response()->json([
-                'message' => 'Task not found'
+                'message' => 'Subtask not found'
             ], 404);
         }
 
         return response()->json([
-            'message' => 'Task found',
-            'data' => $task
+            'message' => 'Subask found',
+            'data' => $subtask
         ]);
-
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Task  $task
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -111,53 +107,43 @@ class TaskController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|min:3',
             'file' => 'mimes:pdf,doc,docx,jpg,jpeg,png,ppt,pptx',
-            'start' => 'required|date',
-            'end' => 'required|date|after:start'
+            'task_id' => 'required|integer'
         ]);
 
         if($validator->fails()){
             return response()->json($validator->errors(), 400);
         }
 
-        $task = Task::find($id);
-
-        if(!$task){
+        $subtask = Subtask::find($id);
+        if(!$subtask){
             return response()->json([
-                'message' => 'Task not found'
+                'message' => 'Subtask not found'
             ], 404);
         }
 
-        if($task->user_id != auth()->user()->id){
-            return response()->json([
-                'message' => 'You can only update self-created task'
-            ], 405);
-        }
-
-        $task->title = $request->title;
-        $task->desc = $request->desc;
-        $task->start = $request->start;
-        $task->end = $request->end;
+        $subtask->title = $request->title;
+        $subtask->desc = $request->desc;
+        $subtask->task_id = $request->task_id;
         if ($request->hasFile('file')) {
             $filename = $request->file->getClientOriginalName();
-            $path = $request->file->storeAs('task', $filename);
-            $task->file = '/storage/'.$path;
-            $task->save();
+            $path = $request->file->storeAs('subtask', $filename);
+            $subtask->file = '/storage/'.$path;
         }
-        $task->user_id = auth()->user()->id;
+        $subtask->save();
 
         return response()->json([
-            'message' => 'Task successfully updated',
-            'data' => $task
+            'message' => 'Subtask successfully updated',
+            'data' => $subtask
         ]);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Task  $task
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Task $task, $id)
+    public function destroy($id)
     {
         if(!is_numeric($id)){
             return response()->json([
@@ -165,32 +151,24 @@ class TaskController extends Controller
             ], 400);
         }
 
-        $task = Task::find($id);
+        $subtask = Subtask::find($id);
 
-        if(!$task){
+        if(!$subtask){
             return response()->json([
-                'message' => 'Task not found'
+                'message' => 'Subtask not found'
             ], 404);
         }
 
-        if($task->user_id != auth()->user()->id){
+        if($subtask->task->user_id != auth()->user()->id){
             return response()->json([
-                'message' => 'You can only delete self-created task'
+                'message' => 'You can only delete self-created subtask'
             ], 405);
         }
 
-        $task->delete();
+        $subtask->delete();
 
         return response()->json([
-            'message' => 'Task successfully deleted'
-        ]);
-    }
-
-    public function taskme(){
-        $taskme = UserHasTask::where('user_id', auth()->user()->id)->with('task')->get();
-        return response()->json([
-            'message' => 'Success',
-            'data' => $taskme
+            'message' => 'Subtask successfully deleted'
         ]);
     }
 }
