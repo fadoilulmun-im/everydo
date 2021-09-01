@@ -133,6 +133,7 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|between:2,100',
             'email' => "required|string|email|max:100|unique:users,email,".auth()->user()->id.",id",
+            'password' => 'string|min:3'
         ]);
 
         if($validator->fails()){
@@ -142,6 +143,9 @@ class AuthController extends Controller
         $user = auth()->user();
         $user->name = $request->name;
         $user->email = $request->email;
+        if($request->has('password')){
+            $user->password = bcrypt($request->password);
+        }
         $user->save();
 
         return response()->json([
