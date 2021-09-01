@@ -47,7 +47,6 @@ Route::prefix('task')->group(function(){
     Route::group(['middleware' => ['jwt.verify']], function () {
         Route::post('/', [TaskController::class, 'store']);
         Route::get('/', [TaskController::class, 'index']);
-        Route::get('/', [TaskController::class, 'index']);
         Route::get('/taskme', [TaskController::class, 'taskme']);
         Route::post('/update/{id}', [TaskController::class, 'update']);
         Route::delete('/delete/{id}', [TaskController::class, 'destroy']);
