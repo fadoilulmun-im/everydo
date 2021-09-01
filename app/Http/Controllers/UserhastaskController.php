@@ -34,7 +34,7 @@ class UserhastaskController extends Controller
 
         return response()->json([
             'message' => 'the task was successfully added to your account',
-            'data' => $usertask
+            'task' => $task
         ], 201);
     }
 }
