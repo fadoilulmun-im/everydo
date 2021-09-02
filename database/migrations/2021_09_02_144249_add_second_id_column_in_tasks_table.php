@@ -14,7 +14,7 @@ class AddSecondIdColumnInTasksTable extends Migration
     public function up()
     {
         Schema::table('tasks', function (Blueprint $table) {
-            $table->string('second_id');
+            $table->string('second_id')->nullable();
         });
     }
 
