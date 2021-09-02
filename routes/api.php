@@ -63,3 +63,7 @@ Route::prefix('subtask')->group(function () {
         Route::delete('/delete/{id}', [SubtaskController::class, 'destroy']);
     });
 });
+
+Route::get('test', function() {
+    Storage::disk('google')->put('test.txt', 'Hello World');
+});

@@ -176,7 +176,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
         Laravel\Socialite\SocialiteServiceProvider::class,
-
+        App\Providers\GoogleDriveServiceProvider::class,
     ],
 
     /*
