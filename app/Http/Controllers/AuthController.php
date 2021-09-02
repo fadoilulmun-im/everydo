@@ -51,8 +51,13 @@ class AuthController extends Controller
                     ['password' => bcrypt($request->password)]
                 ));
 
+        $token = auth()->login($user);
+
         return response()->json([
             'message' => 'User successfully registered',
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => auth()->factory()->getTTL() * 60,
             'user' => $user
         ], 201);
     }

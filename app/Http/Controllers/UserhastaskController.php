@@ -8,9 +8,9 @@ use App\Models\UserHasTask;
 
 class UserhastaskController extends Controller
 {
-    public function tasktome($task_id){
+    public function tasktome($second_id){
 
-        $task = Task::find($task_id);
+        $task = Task::where('second_id', $second_id)->first();
         
         if(!$task){
             return response()->json([
@@ -19,7 +19,7 @@ class UserhastaskController extends Controller
         }
 
         $cek = UserHasTask::where('user_id', auth()->user()->id)
-            ->where('task_id', $task_id)
+            ->where('task_id', $task->id)
             ->get();
         if((sizeof($cek)) > 0){
             return response()->json([
@@ -29,7 +29,7 @@ class UserhastaskController extends Controller
 
         $usertask = UserHasTask::create([
             'user_id' => auth()->user()->id,
-            'task_id' => $task_id,
+            'task_id' => $task->id,
         ]);
 
         return response()->json([
