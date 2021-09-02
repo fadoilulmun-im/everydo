@@ -84,7 +84,7 @@ class SubtaskController extends Controller
         }
 
         return response()->json([
-            'message' => 'Subask found',
+            'message' => 'Subtask found',
             'data' => $subtask
         ]);
     }
