@@ -6,6 +6,7 @@ use App\Models\Task;
 use Illuminate\Http\Request;
 use App\Models\UserHasTask;
 use Validator;
+use Illuminate\Support\Str;
 
 class TaskController extends Controller
 {
@@ -43,12 +44,18 @@ class TaskController extends Controller
             return response()->json($validator->errors(), 400);
         }
 
+        $key = Str::random(9);
+        while(Task::where('second_id', $key)->exists()) {
+            $key = Str::random(9);
+        }
+
         $task = Task::create([
             'title' => $request->title,
             'desc' => $request->desc,
             'start' => $request->start,
             'end' => $request->end,
-            'user_id' => auth()->user()->id
+            'user_id' => auth()->user()->id,
+            'second_id' => $key
         ]);
 
         if ($request->hasFile('file')) {
@@ -126,7 +133,7 @@ class TaskController extends Controller
                 'message' => 'Task not found'
             ], 404);
         }
-
+        
         if($task->user_id != auth()->user()->id){
             return response()->json([
                 'message' => 'You can only update self-created task'
@@ -141,9 +148,17 @@ class TaskController extends Controller
             $filename = $request->file->getClientOriginalName();
             $path = $request->file->storeAs('task', $filename);
             $task->file = '/storage/'.$path;
-            $task->save();
         }
         $task->user_id = auth()->user()->id;
+        if($task->second_id == ''){
+            $key = Str::random(9);
+            while(Task::where('second_id', $key)->exists()) {
+                $key = Str::random(9);
+            }
+            $task->second_id = $key;
+        };
+
+        $task->save();
 
         return response()->json([
             'message' => 'Task successfully updated',
