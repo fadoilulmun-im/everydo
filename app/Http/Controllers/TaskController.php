@@ -78,15 +78,10 @@ class TaskController extends Controller
      * @param  \App\Models\Task  $task
      * @return \Illuminate\Http\Response
      */
-    public function show(Task $task, $id)
+    public function show(Task $task, $second_id)
     {
-        if(!is_numeric($id)){
-            return response()->json([
-                'message' => 'Params id must be a number'
-            ], 400);
-        }
 
-        $task = Task::find($id);
+        $task = Task::where( 'second_id', $second_id)->first();
         
         if(!$task){
             return response()->json([
