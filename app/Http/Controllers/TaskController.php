@@ -55,7 +55,8 @@ class TaskController extends Controller
             'start' => $request->start,
             'end' => $request->end,
             'user_id' => auth()->user()->id,
-            'second_id' => $key
+            'second_id' => $key,
+            'category' => $request->category
         ]);
 
         if ($request->hasFile('file')) {
@@ -144,6 +145,7 @@ class TaskController extends Controller
         $task->desc = $request->desc;
         $task->start = $request->start;
         $task->end = $request->end;
+        $task->category = $request->category;
         if ($request->hasFile('file')) {
             $filename = $request->file->getClientOriginalName();
             $path = $request->file->storeAs('task', $filename);
