@@ -41,7 +41,7 @@ class GoogleController extends Controller
                 return response()->json([
                     'access_token' => $token,
                     'token_type' => 'bearer',
-                    'expires_in' => 'no expired',
+                    'expires_in' => auth()->factory()->getTTL() * 60,
                     'user' => auth()->user()
                 ]);;
     
@@ -53,10 +53,13 @@ class GoogleController extends Controller
                     'password' => bcrypt('123456dummy')
                 ]);
     
-                
+                $token = auth()->login($newUser);
     
                 return response()->json([
                     'message' => 'User successfully registered',
+                    'access_token' => $token,
+                    'token_type' => 'bearer',
+                    'expires_in' => auth()->factory()->getTTL() * 60,
                     'user' => $newUser
                 ]);;
             }
