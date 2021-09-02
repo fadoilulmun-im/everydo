@@ -97,7 +97,7 @@ class AuthController extends Controller
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => 'no expired',
+            'expires_in' => auth()->factory()->getTTL() * 60,
             'user' => auth()->user()
         ]);
     }
@@ -114,6 +114,7 @@ class AuthController extends Controller
 
         if ($request->hasFile('photo')) {
             $user = auth()->user();
+            $filename = $request->photo->getClientOriginalName();
             $path = $request->photo->store('profile');
             if($user->profile_pic != null){
                 $oldphoto=preg_replace("/\/storage/","", $user->profile_pic);
