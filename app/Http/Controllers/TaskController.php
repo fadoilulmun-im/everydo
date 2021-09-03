@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\UserHasTask;
 use Validator;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class TaskController extends Controller
 {
@@ -60,9 +61,10 @@ class TaskController extends Controller
         ]);
 
         if ($request->hasFile('file')) {
-            $filename = $request->file->getClientOriginalName();
-            $path = $request->file->storeAs('task', $filename);
-            $task->file = '/storage/'.$path;
+            $filename = 'task-'.time().$request->file->getClientOriginalName();
+            $request->file('file')->storeAs($filename, '' , 'google');
+            $task->file = Storage::disk('google')->url($filename);
+
             $task->save();
         }
 
@@ -142,9 +144,9 @@ class TaskController extends Controller
         $task->end = $request->end;
         $task->category = $request->category;
         if ($request->hasFile('file')) {
-            $filename = $request->file->getClientOriginalName();
-            $path = $request->file->storeAs('task', $filename);
-            $task->file = '/storage/'.$path;
+            $filename = 'task-'.time().$request->file->getClientOriginalName();
+            $request->file('file')->storeAs($filename, '' , 'google');
+            $task->file = Storage::disk('google')->url($filename);
         }
         $task->user_id = auth()->user()->id;
         if($task->second_id == ''){
