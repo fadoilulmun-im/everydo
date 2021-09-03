@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\UserHasTask;
 use App\Models\Subtask;
 use Validator;
+use Illuminate\Support\Facades\Storage;
 
 class SubtaskController extends Controller
 {
@@ -50,9 +51,10 @@ class SubtaskController extends Controller
         ]);
 
         if ($request->hasFile('file')) {
-            $filename = $request->file->getClientOriginalName();
-            $path = $request->file->storeAs('subtask', $filename);
-            $subtask->file = '/storage/'.$path;
+            $filename = 'subtask-'.time().$request->file->getClientOriginalName();
+            $request->file('file')->storeAs($filename, '' , 'google');
+            $subtask->file = Storage::disk('google')->url($filename);
+
             $subtask->save();
         }
 
@@ -125,9 +127,9 @@ class SubtaskController extends Controller
         $subtask->desc = $request->desc;
         $subtask->task_id = $request->task_id;
         if ($request->hasFile('file')) {
-            $filename = $request->file->getClientOriginalName();
-            $path = $request->file->storeAs('subtask', $filename);
-            $subtask->file = '/storage/'.$path;
+            $filename = 'subtask--'.time().$request->file->getClientOriginalName();
+            $request->file('file')->storeAs($filename, '' , 'google');
+            $subtask->file = Storage::disk('google')->url($filename);
         }
         $subtask->save();
 

@@ -68,5 +68,6 @@ Route::prefix('subtask')->group(function () {
 Route::prefix('assigment')->group(function () {
     Route::group(['middleware' => ['jwt.verify']], function () {
         Route::post('/{subtask_id}', [UserhastaskController::class, 'collect']);
+        Route::get('/{task_id}', [UserhastaskController::class, 'todolist']);
     });
 });

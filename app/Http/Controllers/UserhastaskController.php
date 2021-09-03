@@ -83,4 +83,13 @@ class UserhastaskController extends Controller
             'data' => $usertask
         ], 201);
     }
+
+    public function todolist($task_id){
+        $subtask = Subtask::where('task_id', $task_id)->with('assigments')->get();
+
+        return response()->json([
+            'message' => 'success',
+            'data' => $subtask
+        ]);
+    }
 }
