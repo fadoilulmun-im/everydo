@@ -119,14 +119,11 @@ class AuthController extends Controller
 
         if ($request->hasFile('photo')) {
             $user = auth()->user();
-            $filename = $request->photo->getClientOriginalName();
-            $path = $request->photo->store('profile');
-            if($user->profile_pic != null){
-                $oldphoto=preg_replace("/\/storage/","", $user->profile_pic);
-                $tes = Storage::disk('public')->delete($oldphoto);
-                $user->profile_pic = null;
-            }
-            $user->profile_pic = '/storage/'.$path;
+
+            $filename = 'profile-'.time().$request->photo->getClientOriginalName();
+            $request->file('photo')->storeAs($filename, '' , 'google');
+            $user->profile_pic = Storage::disk('google')->url($filename);
+            
             $user->save();
             return response()->json([
                 'message' => 'Image successfully uploaded',

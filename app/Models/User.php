@@ -63,4 +63,8 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims() {
         return [];
     }
+
+    public function tasks(){
+        return $this->belongsToMany(Task::class, 'user_has_task', 'user_id', 'task_id');
+    }
 }

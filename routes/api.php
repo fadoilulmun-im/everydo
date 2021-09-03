@@ -47,8 +47,8 @@ Route::prefix('task')->group(function(){
     Route::group(['middleware' => ['jwt.verify']], function () {
         Route::post('/', [TaskController::class, 'store']);
         Route::get('/', [TaskController::class, 'index']);
-        Route::get('/{second_id}', [TaskController::class, 'show']);
         Route::get('/taskme', [TaskController::class, 'taskme']);
+        Route::get('/{second_id}', [TaskController::class, 'show']);
         Route::post('/update/{id}', [TaskController::class, 'update']);
         Route::delete('/delete/{id}', [TaskController::class, 'destroy']);
         Route::get('/tasktome/{second_id}', [UserhastaskController::class, 'tasktome']);
@@ -65,6 +65,8 @@ Route::prefix('subtask')->group(function () {
     });
 });
 
-Route::get('test', function() {
-    Storage::disk('google')->put('test.txt', 'Hello World');
+Route::prefix('assigment')->group(function () {
+    Route::group(['middleware' => ['jwt.verify']], function () {
+        Route::post('/{subtask_id}', [UserhastaskController::class, 'collect']);
+    });
 });

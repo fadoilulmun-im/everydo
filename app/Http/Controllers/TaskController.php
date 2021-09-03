@@ -199,7 +199,8 @@ class TaskController extends Controller
     }
 
     public function taskme(){
-        $taskme = UserHasTask::where('user_id', auth()->user()->id)->with('task')->get();
+        $user = auth()->user();
+        $taskme = $user->tasks;
         return response()->json([
             'message' => 'Success',
             'data' => $taskme
