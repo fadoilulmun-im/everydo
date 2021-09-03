@@ -52,6 +52,7 @@ Route::prefix('task')->group(function(){
         Route::post('/update/{id}', [TaskController::class, 'update']);
         Route::delete('/delete/{id}', [TaskController::class, 'destroy']);
         Route::get('/tasktome/{second_id}', [UserhastaskController::class, 'tasktome']);
+        Route::get('/students/{task_id}', [TaskController::class, 'students']);
     });
 });
 

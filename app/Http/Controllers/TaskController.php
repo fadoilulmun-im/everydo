@@ -208,4 +208,20 @@ class TaskController extends Controller
             'data' => $taskme
         ]);
     }
+
+    public function students($task_id){
+        $task = Task::find($task_id);
+        if(!$task){
+            return response()->json([
+                'message' => 'Task not found'
+            ], 404);
+        }
+        $students = $task->students()->get(['profile_pic']);
+        // dd($students);
+
+        return response()->json([
+            'message' => 'Success',
+            'data' => $students
+        ]);
+    }
 }

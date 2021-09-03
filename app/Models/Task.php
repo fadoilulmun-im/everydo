@@ -10,4 +10,8 @@ class Task extends Model
     use HasFactory;
 
     protected $guarded = [];
+
+    public function students(){
+        return $this->belongsToMany(User::class, 'user_has_task', 'task_id', 'user_id');
+    }
 }
